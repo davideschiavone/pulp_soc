@@ -183,7 +183,7 @@ module fc_subsystem #(
             .ext_perf_counters_i   ( perf_counters_int ),
             .fregfile_disable_i    ( 1'b0              ) // try me!
         );
-    end else if(CORE_TYPE == 4) begin: FC_CORE
+    end else if(CORE_TYPE == 3) begin: FC_CORE
          // OpenHW Group CV32E40P
          assign boot_addr = boot_addr_i;
          cv32e40p_wrapper #(
