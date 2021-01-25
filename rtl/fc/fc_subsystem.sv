@@ -47,7 +47,6 @@ module fc_subsystem #(
     output logic                      supervisor_mode_o
 );
 
-    localparam USE_IBEX   = CORE_TYPE == 1 || CORE_TYPE == 2;
     localparam IBEX_RV32M = CORE_TYPE == 1;
     localparam IBEX_RV32E = CORE_TYPE == 2;
 
@@ -117,72 +116,129 @@ module fc_subsystem #(
     //************ RISCV CORE ********************************
     //********************************************************
     generate
-    if ( USE_IBEX == 0) begin: FC_CORE
-    assign boot_addr = boot_addr_i;
-    riscv_core #(
-        .N_EXT_PERF_COUNTERS ( N_EXT_PERF_COUNTERS ),
-        .PULP_SECURE         ( 1                   ),
-        .PULP_CLUSTER        ( 0                   ),
-        .FPU                 ( USE_FPU             ),
-        .FP_DIVSQRT          ( USE_FPU             ),
-        .SHARED_FP           ( 0                   ),
-        .SHARED_FP_DIVSQRT   ( 2                   ),
-        .Zfinx               ( USE_ZFINX           )
-    ) lFC_CORE (
-        .clk_i                 ( clk_i             ),
-        .rst_ni                ( rst_ni            ),
-        .clock_en_i            ( core_clock_en     ),
-        .test_en_i             ( test_en_i         ),
-        .boot_addr_i           ( boot_addr         ),
-        .core_id_i             ( CORE_ID           ),
-        .cluster_id_i          ( CLUSTER_ID        ),
+    if ( CORE_TYPE == 0) begin: FC_CORE
+        // PULP RI5CY
+        assign boot_addr = boot_addr_i;
+        riscv_core #(
+            .N_EXT_PERF_COUNTERS ( N_EXT_PERF_COUNTERS ),
+            .PULP_SECURE         ( 1                   ),
+            .PULP_CLUSTER        ( 0                   ),
+            .FPU                 ( USE_FPU             ),
+            .FP_DIVSQRT          ( USE_FPU             ),
+            .SHARED_FP           ( 0                   ),
+            .SHARED_FP_DIVSQRT   ( 2                   ),
+            .Zfinx               ( USE_ZFINX           )
+        ) lFC_CORE (
+            .clk_i                 ( clk_i             ),
+            .rst_ni                ( rst_ni            ),
+            .clock_en_i            ( core_clock_en     ),
+            .test_en_i             ( test_en_i         ),
+            .boot_addr_i           ( boot_addr         ),
+            .core_id_i             ( CORE_ID           ),
+            .cluster_id_i          ( CLUSTER_ID        ),
 
-        // Instruction Memory Interface:  Interface to Instruction Logaritmic interconnect: Req->grant handshake
-        .instr_addr_o          ( core_instr_addr   ),
-        .instr_req_o           ( core_instr_req    ),
-        .instr_rdata_i         ( core_instr_rdata  ),
-        .instr_gnt_i           ( core_instr_gnt    ),
-        .instr_rvalid_i        ( core_instr_rvalid ),
+            // Instruction Memory Interface:  Interface to Instruction Logaritmic interconnect: Req->grant handshake
+            .instr_addr_o          ( core_instr_addr   ),
+            .instr_req_o           ( core_instr_req    ),
+            .instr_rdata_i         ( core_instr_rdata  ),
+            .instr_gnt_i           ( core_instr_gnt    ),
+            .instr_rvalid_i        ( core_instr_rvalid ),
 
-        // Data memory interface:
-        .data_addr_o           ( core_data_addr    ),
-        .data_req_o            ( core_data_req     ),
-        .data_be_o             ( core_data_be      ),
-        .data_rdata_i          ( core_data_rdata   ),
-        .data_we_o             ( core_data_we      ),
-        .data_gnt_i            ( core_data_gnt     ),
-        .data_wdata_o          ( core_data_wdata   ),
-        .data_rvalid_i         ( core_data_rvalid  ),
+            // Data memory interface:
+            .data_addr_o           ( core_data_addr    ),
+            .data_req_o            ( core_data_req     ),
+            .data_be_o             ( core_data_be      ),
+            .data_rdata_i          ( core_data_rdata   ),
+            .data_we_o             ( core_data_we      ),
+            .data_gnt_i            ( core_data_gnt     ),
+            .data_wdata_o          ( core_data_wdata   ),
+            .data_rvalid_i         ( core_data_rvalid  ),
 
-        // apu-interconnect
-        // handshake signals
-        .apu_master_req_o      (                   ),
-        .apu_master_ready_o    (                   ),
-        .apu_master_gnt_i      ( 1'b1              ),
-        // request channel
-        .apu_master_operands_o (                   ),
-        .apu_master_op_o       (                   ),
-        .apu_master_type_o     (                   ),
-        .apu_master_flags_o    (                   ),
-        // response channel
-        .apu_master_valid_i    ( '0                ),
-        .apu_master_result_i   ( '0                ),
-        .apu_master_flags_i    ( '0                ),
+            // apu-interconnect
+            // handshake signals
+            .apu_master_req_o      (                   ),
+            .apu_master_ready_o    (                   ),
+            .apu_master_gnt_i      ( 1'b1              ),
+            // request channel
+            .apu_master_operands_o (                   ),
+            .apu_master_op_o       (                   ),
+            .apu_master_type_o     (                   ),
+            .apu_master_flags_o    (                   ),
+            // response channel
+            .apu_master_valid_i    ( '0                ),
+            .apu_master_result_i   ( '0                ),
+            .apu_master_flags_i    ( '0                ),
 
-        .irq_i                 ( core_irq_req      ),
-        .irq_id_i              ( core_irq_id       ),
-        .irq_ack_o             ( core_irq_ack      ),
-        .irq_id_o              ( core_irq_ack_id   ),
-        .irq_sec_i             ( 1'b0              ),
-        .sec_lvl_o             (                   ),
+            .irq_i                 ( core_irq_req      ),
+            .irq_id_i              ( core_irq_id       ),
+            .irq_ack_o             ( core_irq_ack      ),
+            .irq_id_o              ( core_irq_ack_id   ),
+            .irq_sec_i             ( 1'b0              ),
+            .sec_lvl_o             (                   ),
 
-        .debug_req_i           ( debug_req_i       ),
+            .debug_req_i           ( debug_req_i       ),
 
-        .fetch_enable_i        ( fetch_en_int      ),
-        .core_busy_o           (                   ),
-        .ext_perf_counters_i   ( perf_counters_int ),
-        .fregfile_disable_i    ( 1'b0              ) // try me!
-    );
+            .fetch_enable_i        ( fetch_en_int      ),
+            .core_busy_o           (                   ),
+            .ext_perf_counters_i   ( perf_counters_int ),
+            .fregfile_disable_i    ( 1'b0              ) // try me!
+        );
+    end else if(CORE_TYPE == 4) begin: FC_CORE
+         // OpenHW Group CV32E40P
+         cv32e40p_wrapper
+          lFC_CORE (
+             .clk_i                 ( clk_i             ),
+             .rst_ni                ( rst_ni            ),
+             .pulp_clock_en_i       ( core_clock_en     ),
+             .scan_cg_en_i          ( test_en_i         ),
+             .boot_addr_i           ( boot_addr         ),
+             .mtvec_addr_i          ( '0                ),
+             .dm_halt_addr_i        ( 32'h1A110800      ),
+             .hart_id_i             ( hart_id           ),
+             .dm_exception_addr_i   ( '0                ),
+
+             // Instruction Memory Interface
+             .instr_addr_o          ( core_instr_addr   ),
+             .instr_req_o           ( core_instr_req    ),
+             .instr_rdata_i         ( core_instr_rdata  ),
+             .instr_gnt_i           ( core_instr_gnt    ),
+             .instr_rvalid_i        ( core_instr_rvalid ),
+
+             // Data memory interface
+             .data_addr_o           ( core_data_addr    ),
+             .data_req_o            ( core_data_req     ),
+             .data_be_o             ( core_data_be      ),
+             .data_rdata_i          ( core_data_rdata   ),
+             .data_we_o             ( core_data_we      ),
+             .data_gnt_i            ( core_data_gnt     ),
+             .data_wdata_o          ( core_data_wdata   ),
+             .data_rvalid_i         ( core_data_rvalid  ),
+
+             // apu-interconnect
+             // handshake signals
+             .apu_req_o             (                   ),
+             .apu_gnt_i             ( 1'b1              ),
+             // request channel
+             .apu_operands_o        (                   ),
+             .apu_op_o              (                   ),
+             .apu_flags_o           (                   ),
+             // response channel
+             .apu_rvalid_i          ( '0                ),
+             .apu_result_i          ( '0                ),
+             .apu_flags_i           ( '0                ),
+
+             .irq_i                 ( core_irq_x        ),
+             .irq_ack_o             ( core_irq_ack      ),
+             .irq_id_o              ( core_irq_ack_id   ),
+
+             .debug_req_i           ( debug_req_i       ),
+             .debug_havereset_o     (                   ),
+             .debug_running_o       (                   ),
+             .debug_halted_o        (                   ),
+             .fetch_enable_i        ( fetch_en_int      ),
+             .core_sleep_o          (                   )
+         );
+
     end else begin: FC_CORE
     assign boot_addr = boot_addr_i & 32'hFFFFFF00; // RI5CY expects 0x80 offset, Ibex expects 0x00 offset (adds reset offset 0x80 internally)
 `ifdef VERILATOR
@@ -255,8 +311,8 @@ module fc_subsystem #(
     assign supervisor_mode_o = 1'b1;
 
     generate
-    if ( USE_IBEX == 1) begin : convert_irqs
-    // Ibex supports 32 additional fast interrupts and reads the interrupt lines directly.
+    if ( CORE_TYPE != 0) begin : convert_irqs
+    // Ibex and CV32E40P supports 32 additional fast interrupts and reads the interrupt lines directly.
     // Convert ID back to interrupt lines
     always_comb begin : gen_core_irq_x
         core_irq_x = '0;
