@@ -185,7 +185,10 @@ module fc_subsystem #(
         );
     end else if(CORE_TYPE == 4) begin: FC_CORE
          // OpenHW Group CV32E40P
-         cv32e40p_wrapper
+         assign boot_addr = boot_addr_i;
+         cv32e40p_wrapper #(
+            .PULP_XPULP (1)
+          )
           lFC_CORE (
              .clk_i                 ( clk_i             ),
              .rst_ni                ( rst_ni            ),
