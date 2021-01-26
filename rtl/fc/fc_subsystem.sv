@@ -92,7 +92,7 @@ module fc_subsystem #(
     assign perf_counters_int = 1'b0;
     assign fetch_en_int      = fetch_en_eu & fetch_en_i;
 
-    assign hart_id = {21'b0, CLUSTER_ID[5:0], 1'b0, CORE_ID[3:0]};
+    assign hart_id = CoreSelected != cv32e40pCore ? {21'b0, CLUSTER_ID[5:0], 1'b0, CORE_ID[3:0]} : '0;
 
     XBAR_TCDM_BUS core_data_bus ();
     XBAR_TCDM_BUS core_instr_bus ();

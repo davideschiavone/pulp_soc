@@ -244,7 +244,7 @@ module pulp_soc import dm::*; #(
 
     localparam ROM_ADDR_WIDTH        = 13;
 
-    localparam FC_CORE_CLUSTER_ID    = 6'd31;
+    localparam FC_CORE_CLUSTER_ID    = CORE_TYPE != 3 ? 6'd31 : 6'd0;
     localparam CL_CORE_CLUSTER_ID    = 6'd0;
 
     localparam FC_CORE_CORE_ID       = 4'd0;
