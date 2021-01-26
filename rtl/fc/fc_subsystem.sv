@@ -49,15 +49,15 @@ module fc_subsystem #(
 
     typedef enum logic [2:0] {
       RiscyCore       = 0,
-      IbexCore_RVIMC  = 1,
-      IbexCore_RVEC   = 2,
+      IbexCoreRVIMC   = 1,
+      IbexCoreRVEC    = 2,
       cv32e40pCore    = 3
     } core_t;
 
-    localparam core_t core_selected = CORE_TYPE;
+    localparam core_t CoreSelected = CORE_TYPE;
 
-    localparam IBEX_RV32M = core_selected == IbexCore_RVIMC;
-    localparam IBEX_RV32E = core_selected == IbexCore_RVEC;
+    localparam IBEX_RV32M = CoreSelected == IbexCoreRVIMC;
+    localparam IBEX_RV32E = CoreSelected == IbexCoreRVEC;
 
     // Interrupt signals
     logic        core_irq_req   ;
@@ -125,7 +125,7 @@ module fc_subsystem #(
     //************ RISCV CORE ********************************
     //********************************************************
 
-    if ( core_selected == RiscyCore ) begin: FC_CORE
+    if ( CoreSelected == RiscyCore ) begin: gen_fc_core_riscy
         // PULP RI5CY
         assign boot_addr = boot_addr_i;
         riscv_core #(
@@ -192,7 +192,7 @@ module fc_subsystem #(
             .ext_perf_counters_i   ( perf_counters_int ),
             .fregfile_disable_i    ( 1'b0              ) // try me!
         );
-    end else if( core_selected == cv32e40pCore ) begin: FC_CORE
+    end else if( CoreSelected == cv32e40pCore ) begin: gen_fc_core_cv32e40p
          // OpenHW Group CV32E40P
          assign boot_addr = boot_addr_i;
          cv32e40p_wrapper #(
@@ -251,7 +251,7 @@ module fc_subsystem #(
              .core_sleep_o          (                   )
          );
 
-    end else if ( core_selected == IbexCore_RVEC || core_selected == IbexCore_RVIMC ) begin: FC_CORE
+    end else if ( CoreSelected == IbexCoreRVEC || CoreSelected == IbexCoreRVIMC ) begin: gen_fc_core_ibex
     assign boot_addr = boot_addr_i & 32'hFFFFFF00; // RI5CY expects 0x80 offset, Ibex expects 0x00 offset (adds reset offset 0x80 internally)
 `ifdef VERILATOR
     ibex_core #(
@@ -317,9 +317,9 @@ module fc_subsystem #(
         .fetch_enable_i        ( fetch_en_int      ),
         .core_sleep_o          (                   )
     );
-    end else begin
+    end else begin: gen_failure
         initial begin
-            $error("[%t] CORE_TYPE %d is not supported", $time, core_selected);
+            $error("[%t] CORE_TYPE %d is not supported", $time, CoreSelected);
             $stop();
         end
     end
@@ -327,7 +327,7 @@ module fc_subsystem #(
     assign supervisor_mode_o = 1'b1;
 
     generate
-    if ( core_selected != RiscyCore ) begin : convert_irqs
+    if ( CoreSelected != RiscyCore ) begin : gen_convert_irqs
     // Ibex and CV32E40P supports 32 additional fast interrupts and reads the interrupt lines directly.
     // Convert ID back to interrupt lines
     always_comb begin : gen_core_irq_x
