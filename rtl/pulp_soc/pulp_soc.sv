@@ -12,7 +12,7 @@
 `include "pulp_soc_defines.sv"
 
 module pulp_soc import dm::*; #(
-    parameter CORE_TYPE               = 0,
+    parameter logic [1:0] CORE_TYPE   = 0,
     parameter USE_FPU                 = 1,
     parameter USE_HWPE                = 1,
     parameter USE_CLUSTER_EVENT       = 1,

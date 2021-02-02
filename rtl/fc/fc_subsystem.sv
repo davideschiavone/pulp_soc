@@ -10,18 +10,18 @@
 
 
 module fc_subsystem #(
-    parameter CORE_TYPE           = 0,
-    parameter USE_FPU             = 1,
-    parameter USE_HWPE            = 1,
-    parameter N_EXT_PERF_COUNTERS = 1,
-    parameter EVENT_ID_WIDTH      = 8,
-    parameter PER_ID_WIDTH        = 32,
-    parameter NB_HWPE_PORTS       = 4,
-    parameter PULP_SECURE         = 1,
-    parameter TB_RISCV            = 0,
-    parameter CORE_ID             = 4'h0,
-    parameter CLUSTER_ID          = 6'h1F,
-    parameter USE_ZFINX           = 1
+    parameter logic [1:0] CORE_TYPE = 0,
+    parameter USE_FPU               = 1,
+    parameter USE_HWPE              = 1,
+    parameter N_EXT_PERF_COUNTERS   = 1,
+    parameter EVENT_ID_WIDTH        = 8,
+    parameter PER_ID_WIDTH          = 32,
+    parameter NB_HWPE_PORTS         = 4,
+    parameter PULP_SECURE           = 1,
+    parameter TB_RISCV              = 0,
+    parameter CORE_ID               = 4'h0,
+    parameter CLUSTER_ID            = 6'h1F,
+    parameter USE_ZFINX             = 1
 )
 (
     input  logic                      clk_i,
@@ -54,7 +54,7 @@ module fc_subsystem #(
       cv32e40pCore    = 3
     } core_t;
 
-    localparam core_t CoreSelected = CORE_TYPE;
+    localparam core_t CoreSelected = core_t'(CORE_TYPE);
 
     localparam IBEX_RV32M = CoreSelected == IbexCoreRVIMC;
     localparam IBEX_RV32E = CoreSelected == IbexCoreRVEC;

@@ -76,8 +76,8 @@ ibex:
   group: lowRISC
   domain: [soc]
 cv32e40p:
-  commit: core-v-mcu
-  group: davideschiavone
+  commit: ae5b08bc4cc3459748dfa809572e8107703a4ade
+  group: openhwgroup
   domain: [soc]
 scm:
   commit: v1.0.1
