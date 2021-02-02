@@ -125,7 +125,7 @@ module fc_subsystem #(
     //************ RISCV CORE ********************************
     //********************************************************
 
-    if ( CoreSelected == RiscyCore ) begin: gen_fc_core_riscy
+    if (CoreSelected == RiscyCore) begin: gen_fc_core_riscy
         // PULP RI5CY
         assign boot_addr = boot_addr_i;
         riscv_core #(
@@ -192,7 +192,7 @@ module fc_subsystem #(
             .ext_perf_counters_i   ( perf_counters_int ),
             .fregfile_disable_i    ( 1'b0              ) // try me!
         );
-    end else if( CoreSelected == cv32e40pCore ) begin: gen_fc_core_cv32e40p
+    end else if (CoreSelected == cv32e40pCore) begin: gen_fc_core_cv32e40p
          // OpenHW Group CV32E40P
          assign boot_addr = boot_addr_i;
          cv32e40p_wrapper #(
@@ -251,7 +251,7 @@ module fc_subsystem #(
              .core_sleep_o          (                   )
          );
 
-    end else if ( CoreSelected == IbexCoreRVEC || CoreSelected == IbexCoreRVIMC ) begin: gen_fc_core_ibex
+    end else if (CoreSelected == IbexCoreRVEC || CoreSelected == IbexCoreRVIMC) begin: gen_fc_core_ibex
     assign boot_addr = boot_addr_i & 32'hFFFFFF00; // RI5CY expects 0x80 offset, Ibex expects 0x00 offset (adds reset offset 0x80 internally)
 `ifdef VERILATOR
     ibex_core #(
