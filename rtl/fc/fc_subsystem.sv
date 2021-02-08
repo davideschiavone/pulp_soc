@@ -47,7 +47,7 @@ module fc_subsystem #(
     output logic                      supervisor_mode_o
 );
 
-    typedef enum logic [2:0] {
+    typedef enum logic [1:0] {
       RiscyCore       = 0,
       IbexCoreRVIMC   = 1,
       IbexCoreRVEC    = 2,
@@ -195,7 +195,7 @@ module fc_subsystem #(
     end else if (CoreSelected == cv32e40pCore) begin: gen_fc_core_cv32e40p
          // OpenHW Group CV32E40P
          assign boot_addr = boot_addr_i;
-         cv32e40p_wrapper #(
+         cv32e40p_core #(
             .PULP_XPULP (1)
           )
           lFC_CORE (
