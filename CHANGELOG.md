@@ -10,6 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Fixed
 
+## [2.1.0] - 2021-02-02
+### Added
+- Added `Bender.yml` file for bender compatibility
+- Added `obi_pulp_adapter`
+
+### Changed
+- updated `ibex`
+- change from deprecated `generic_memory` to `tc_sram` tech cell, bump `tech_cells_generic` accordingly
+- Expose L2 Bank sizes to improve consistency
+- updated `apb_fll_if`, removed local interface definition to use the one defined externally
+- updated `hwpe-mac-engine`
+
+### Removed
+### Fixed
+
 ## [2.0.1] - 2021-01-11
 ### Added
 ### Changed
